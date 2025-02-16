@@ -96,7 +96,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
+          "[format('{0}', variables('userAssignedIdentityName'))]": {}
         }
       },
       "kind": "hub",
