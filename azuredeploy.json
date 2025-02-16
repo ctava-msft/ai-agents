@@ -123,10 +123,7 @@
       "name": "[variables('workspaceName')]",
       "location": "[variables('location')]",
       "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
-        }
+        "type": "SystemAssigned"
       },
       "kind": "hub",
       "properties": {
