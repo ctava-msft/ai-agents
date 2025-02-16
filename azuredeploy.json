@@ -115,7 +115,7 @@
     {
       "type": "Microsoft.MachineLearningServices/workspaces/projects",
       "apiVersion": "2022-02-01-preview",
-      "name": "[variables('projectName')]",
+      "name": "[concat(variables('workspaceName'), '/', variables('projectName'))]",
       "properties": {
         "description": "Description for my project"
       },
