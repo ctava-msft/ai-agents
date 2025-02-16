@@ -18,7 +18,8 @@
     "storageContainerName": "[format('sc{0}', variables('uniqueSuffix'))]",
     "tenantId": "[subscription().tenantId]",
     "uniqueSuffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
-    "workspaceName": "[format('w-{0}', variables('uniqueSuffix'))]"
+    "workspaceName": "[format('w-{0}', variables('uniqueSuffix'))]",
+    "userAssignedIdentityName": "[format('uai-{0}', variables('uniqueSuffix'))]"
   },
   "resources": [
     {
@@ -80,12 +81,22 @@
       "properties": {}
     },
     {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "[variables('userAssignedIdentityName')]",
+      "location": "[variables('location')]",
+      "properties": {}
+    },
+    {
       "type": "Microsoft.MachineLearningServices/workspaces",
       "apiVersion": "2020-03-01",
       "name": "[variables('workspaceName')]",
       "location": "[variables('location')]",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
+        }
       },
       "kind": "hub",
       "properties": {
@@ -96,7 +107,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', variables('aiServicesAccountName'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]"
       ]
     }
   ],
