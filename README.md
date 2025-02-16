@@ -11,6 +11,9 @@ Click on the Deploy to Azure button to follow the steps to create a resource gro
 [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fctava-msft%2Fai-agents%2Fmain%2Fazuredeploy.json)
 
 
+Create the AI Foundry Project using Click-Ops.
+Create the Model-deployment using click-ops.
+
 # Setup python environment
 ```
 python -m venv .venv
@@ -21,4 +24,4 @@ Copy sample.env to .env and enter values for the parameters.
 
 ## Scripts
 
-Run agent.py to create agent, thread, upload files and provide Q&A on them.
+Run python agent.py to create agent, thread, upload files and provide Q&A on them.

@@ -4,10 +4,8 @@ import jwt
 from dotenv import load_dotenv
 from azure.identity import (
     DefaultAzureCredential,
-    InteractiveBrowserCredential,
-    ManagedIdentityCredential
+    InteractiveBrowserCredential
 )
-from key_async_credential import KeyAsyncCredential
 from azure.ai.projects.models import (
     FileSearchTool,
     OpenAIFile,
@@ -21,29 +19,20 @@ async def main() -> None:
     load_dotenv()
     ai_agent_settings = AzureAIAgentSettings.create()
 
-    try:
-        print("Attempting to acquire token with ManagedIdentityCredential using user managed identity 954dbc4b-5028-47dd-b32a-b83ca183b0b6...")
-        credential = ManagedIdentityCredential(client_id="954dbc4b-5028-47dd-b32a-b83ca183b0b6")
-        token = credential.get_token("https://management.azure.com/.default")
-        print("Token acquired successfully using ManagedIdentityCredential.")
-        decoded_token = jwt.decode(token.token, options={"verify_signature": False})
-        identity_object_id = decoded_token.get("oid")
-        print("Identity object id obtained with ManagedIdentityCredential:", identity_object_id)
-    except Exception as ex:
-        print("ManagedIdentityCredential failed:", ex)
-        print("Falling back to InteractiveBrowserCredential...")
-        credential = InteractiveBrowserCredential()
-        token = credential.get_token("https://management.azure.com/.default")
-        decoded_token = jwt.decode(token.token, options={"verify_signature": False})
-        identity_object_id = decoded_token.get("oid")
-        print("Identity object id obtained with InteractiveBrowserCredential:", identity_object_id)
+    # Load forced tenant from environment variable (e.g., AZURE_FORCED_TENANT_ID)
+    forced_tenant_id = os.getenv("AZURE_FORCED_TENANT_ID")
+    if forced_tenant_id:
+        print(f"Forcing tenant: {forced_tenant_id}")
+        credential = InteractiveBrowserCredential(tenant_id=forced_tenant_id)
+    else:
+        credential = DefaultAzureCredential()
 
     async with AzureAIAgent.create_client(
         credential,
         conn_str=ai_agent_settings.project_connection_string.get_secret_value(),
     ) as client:
         file_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "covetrus-fin-db", "files", "data.csv"
+            os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "ai-agents", "files", "data.html"
         )
 
         # Wrap file upload to catch authentication errors
@@ -72,7 +61,8 @@ async def main() -> None:
         except Exception as err:
             if "Microsoft.MachineLearningServices/workspaces/agents/action" in str(err):
                 print("Permission error: The identity does not have required permissions for Microsoft.MachineLearningServices/workspaces/agents/action actions.")
-                print("Please verify that the identity (oid:", identity_object_id, ") has been assigned the proper roles in your Azure Machine Learning workspace.")
+                print("Please verify that the identity (oid: identity_object_id has been assigned the proper roles in your Azure Machine Learning workspace.")
+                print("Refer to https://aka.ms/azureml-auth-troubleshooting for more information.")
             raise
 
         # Create the AzureAI Agent
@@ -99,8 +89,9 @@ async def main() -> None:
                     if content.role != AuthorRole.TOOL:
                         print(f"# Agent: {content.content}")
         finally:
-            await client.agents.delete_thread(thread.id)
-            await client.agents.delete_agent(agent.id)
+            print(f"# Your done")
+            #await client.agents.delete_thread(thread.id)
+            #await client.agents.delete_agent(agent.id)
 
 
 if __name__ == "__main__":
