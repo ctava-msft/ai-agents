@@ -68,12 +68,6 @@
       "apiVersion": "2019-09-01",
       "name": "[variables('keyVaultName')]",
       "location": "[variables('location')]",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
-        }
-      },
       "properties": {
         "tenantId": "[variables('tenantId')]",
         "sku": {
