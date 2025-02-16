@@ -52,7 +52,10 @@
           "keySource": "Microsoft.Storage"
         },
         "supportsHttpsTrafficOnly": true
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]"
+      ]
     },
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
@@ -92,7 +95,10 @@
           "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
         }
       },
-      "properties": {}
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]"
+      ]
     },
     {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
