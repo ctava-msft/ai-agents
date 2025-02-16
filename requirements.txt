@@ -1,0 +1,6 @@
+azure-ai-ml
+azure-ai-projects
+azure-identity
+openai
+PyJWT
+semantic-kernel

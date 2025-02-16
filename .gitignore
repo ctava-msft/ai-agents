@@ -1,0 +1,8 @@
+.env
+.env_copy
+.history
+.venv
+infra
+azure.yaml
+requirements_copy.txt
+files/
